@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load url_tags %}
+{% block title %}Parking reports{% endblock %}
+{% block content %}
+<section class="page-heading"><div><p class="eyebrow mb-2">YOUR PARKING</p><h1 class="h2 fw-bold mb-1">Parking reports</h1><p class="text-secondary mb-0">A summary of your parking history from saved records.</p></div><a class="btn btn-outline-primary" href="{% url 'parking:report_csv' %}{% if request.GET %}?{{ request.GET.urlencode }}{% endif %}"><i class="bi bi-download me-1"></i>Export CSV</a></section>
+<section class="surface-card p-3 p-md-4 mb-4">
+    <form method="get" class="row g-3 align-items-end">{% for field in form %}<div class="col-6 col-md-3"><label class="form-label small fw-semibold" for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}</div>{% endfor %}<div class="col-12 d-flex gap-2"><button class="btn btn-primary" type="submit">Update report</button><a class="btn btn-outline-secondary" href="{% url 'parking:reports' %}">Reset</a></div></form>
+</section>
+<div class="row g-3 mb-4">
+    <div class="col-sm-4"><article class="stat-card h-100 p-4 rounded-4"><p class="small text-secondary mb-2">Total sessions</p><p class="display-6 fw-bold mb-0">{{ summary.total }}</p></article></div>
+    <div class="col-sm-4"><article class="stat-card h-100 p-4 rounded-4"><p class="small text-secondary mb-2">Active</p><p class="display-6 fw-bold mb-0">{{ summary.active }}</p></article></div>
+    <div class="col-sm-4"><article class="stat-card h-100 p-4 rounded-4"><p class="small text-secondary mb-2">Completed</p><p class="display-6 fw-bold mb-0">{{ summary.completed }}</p></article></div>
+</div>
+<div class="row g-4">
+    <div class="col-lg-6"><section class="surface-card p-4 h-100"><h2 class="h5 mb-3">Sessions per vehicle</h2>{% if per_vehicle %}<div class="table-responsive"><table class="table table-sm"><thead><tr><th>Vehicle</th><th class="text-end">Sessions</th></tr></thead><tbody>{% for row in per_vehicle %}<tr><td>{{ row.vehicle__plate_number }}{% if row.vehicle__brand_model %}<span class="small text-secondary"> · {{ row.vehicle__brand_model }}</span>{% endif %}</td><td class="text-end">{{ row.total }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<p class="text-secondary mb-0">No sessions match these filters.</p>{% endif %}</section></div>
+    <div class="col-lg-6"><section class="surface-card p-4 h-100"><h2 class="h5 mb-3">Sessions per facility</h2>{% if per_facility %}<div class="table-responsive"><table class="table table-sm"><thead><tr><th>Facility</th><th class="text-end">Sessions</th></tr></thead><tbody>{% for row in per_facility %}<tr><td>{{ row.location__facility__name }}</td><td class="text-end">{{ row.total }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<p class="text-secondary mb-0">No sessions match these filters.</p>{% endif %}</section></div>
+    <div class="col-lg-6"><section class="surface-card p-4 h-100"><h2 class="h5 mb-3">Sessions per month</h2>{% if per_month %}<div class="table-responsive"><table class="table table-sm"><thead><tr><th>Month</th><th class="text-end">Sessions</th></tr></thead><tbody>{% for row in per_month %}<tr><td>{{ row.month|date:"F Y" }}</td><td class="text-end">{{ row.total }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<p class="text-secondary mb-0">No sessions match these filters.</p>{% endif %}</section></div>
+    <div class="col-lg-6"><section class="surface-card p-4 h-100"><h2 class="h5 mb-3">Matching parking history</h2>{% if page_obj.object_list %}<div class="table-responsive"><table class="table table-sm"><thead><tr><th>Vehicle</th><th>Facility</th><th>Parked</th></tr></thead><tbody>{% for session in page_obj %}<tr><td>{{ session.vehicle.plate_number }}</td><td>{{ session.location.facility.name }}</td><td><a href="{% url 'parking:session_detail' session.pk %}">{{ session.parked_at|date:"M j, Y" }}</a></td></tr>{% endfor %}</tbody></table></div>{% else %}<p class="text-secondary mb-0">No sessions match these filters.</p>{% endif %}</section></div>
+</div>
+{% include "parking/_pagination.html" %}
+{% endblock %}

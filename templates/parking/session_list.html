@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Parking history{% endblock %}
+{% block content %}
+<section class="page-heading"><div><p class="eyebrow mb-2">YOUR PARKING</p><h1 class="h2 fw-bold mb-1">Parking history</h1><p class="text-secondary mb-0">Search and filter your parking sessions and spot details.</p></div><a class="btn btn-primary" href="{% url 'parking:session_create' %}"><i class="bi bi-plus-lg me-1"></i>Record parking</a></section>
+<div class="surface-card p-3 p-md-4 mb-4">
+    <form method="get">
+        <div class="row g-2">
+            {% for field in form %}
+            <div class="{% if field.name == 'q' %}col-md-6{% elif field.name == 'date_from' or field.name == 'date_to' %}col-6 col-md-3{% else %}col-6 col-md-3{% endif %}">
+                <label class="form-label small fw-semibold" for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}
+                {% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+            </div>
+            {% endfor %}
+            <div class="col-12 d-flex gap-2 mt-3"><button class="btn btn-primary" type="submit"><i class="bi bi-funnel me-1"></i>Apply filters</button><a class="btn btn-outline-secondary" href="{% url 'parking:session_list' %}">Reset</a></div>
+        </div>
+    </form>
+</div>
+<section class="surface-card p-3 p-md-4">
+    {% if page_obj.object_list %}
+    <div class="table-responsive"><table class="table align-middle"><thead><tr><th>Vehicle</th><th>Parking spot</th><th>Parked at</th><th>Status</th><th></th></tr></thead><tbody>
+        {% for session in page_obj %}<tr>
+            <td><span class="fw-semibold">{{ session.vehicle.plate_number }}</span><div class="small text-secondary">{{ session.vehicle.brand_model|default:"" }}</div></td>
+            <td><a class="text-decoration-none" href="{% url 'parking:session_detail' session.pk %}">{{ session.location.facility.name }}</a><div class="small text-secondary">{{ session.location.floor_level }} · {{ session.location.zone }} · Stall {{ session.location.stall_number }}</div></td>
+            <td class="text-nowrap">{{ session.parked_at|date:"M j, Y" }}<div class="small text-secondary">{{ session.parked_at|date:"g:i A" }}</div></td>
+            <td><span class="status-badge status-{{ session.status|lower }}">{{ session.get_status_display }}</span></td>
+            <td class="text-end"><a class="btn btn-sm btn-outline-primary" href="{% url 'parking:session_detail' session.pk %}">Open</a></td>
+        </tr>{% endfor %}
+    </tbody></table></div>
+    {% else %}<div class="empty-state"><i class="bi bi-clock-history" aria-hidden="true"></i><h2 class="h5">No parking sessions found</h2><p>Record where you parked, then add a photo or landmark note to help you find your car.</p><a class="btn btn-primary" href="{% url 'parking:session_create' %}">Record your first parking spot</a></div>{% endif %}
+</section>
+{% include "parking/_pagination.html" %}
+{% endblock %}

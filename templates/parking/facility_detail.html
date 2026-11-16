@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}{{ facility.name }}{% endblock %}
+{% block content %}
+<section class="page-heading"><div><p class="eyebrow mb-2">PARKING DIRECTORY</p><h1 class="h2 fw-bold mb-1">{{ facility.name }}</h1><p class="text-secondary mb-0">{{ facility.get_facility_type_display }} · {{ facility.location_count }} locations</p></div><div class="d-flex gap-2">{% if user.role == "ADMINISTRATOR" %}<a class="btn btn-outline-secondary" href="{% url 'parking:facility_update' facility.pk %}">Edit facility</a><a class="btn btn-primary" href="{% url 'parking:location_create' %}">Add location</a>{% endif %}<a class="btn btn-outline-secondary" href="{% url 'parking:location_list' %}?facility={{ facility.pk }}">Browse spots</a></div></section>
+<section class="surface-card p-3 p-md-4"><h2 class="h5 mb-3">Parking locations</h2>
+    {% if page_obj.object_list %}<div class="table-responsive"><table class="table align-middle"><thead><tr><th>Floor / level</th><th>Zone</th><th>Stall</th><th></th></tr></thead><tbody>{% for location in page_obj %}<tr><td>{{ location.floor_level }}</td><td>{{ location.zone }}</td><td>{{ location.stall_number }}</td><td class="text-end"><a href="{% url 'parking:location_detail' location.pk %}">View spot</a></td></tr>{% endfor %}</tbody></table></div>
+    {% else %}<div class="empty-state compact"><i class="bi bi-geo-alt" aria-hidden="true"></i><p>No locations have been added to this facility yet.</p></div>{% endif %}
+</section>
+{% include "parking/_pagination.html" %}
+{% endblock %}

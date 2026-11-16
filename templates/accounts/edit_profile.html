@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Edit profile{% endblock %}
+{% block content %}
+<div class="form-shell mx-auto">
+    <div class="mb-4">
+        <p class="eyebrow mb-2">YOUR ACCOUNT</p>
+        <h1 class="h2 fw-bold">Edit your profile</h1>
+        <p class="text-secondary">Your username and role cannot be changed here.</p>
+    </div>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger" role="alert">{{ form.non_field_errors }}</div>
+        {% endif %}
+        {% for field in form %}
+            <div class="mb-3">
+                <label class="form-label fw-semibold" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+            </div>
+        {% endfor %}
+        <div class="d-flex gap-2 mt-4">
+            <button class="btn btn-primary" type="submit">Save changes</button>
+            <a class="btn btn-outline-secondary" href="{% url 'accounts:profile' %}">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Create an account{% endblock %}
+{% block content %}
+<div class="form-shell mx-auto">
+    <div class="mb-4">
+        <p class="eyebrow mb-2">GET STARTED WITH PARKME</p>
+        <h1 class="h2 fw-bold">Create your driver account</h1>
+        <p class="text-secondary">Your account is private to you. You can update your profile later.</p>
+    </div>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger" role="alert">{{ form.non_field_errors }}</div>
+        {% endif %}
+        {% for field in form %}
+            <div class="mb-3">
+                <label class="form-label fw-semibold" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+                {% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+            </div>
+        {% endfor %}
+        <button class="btn btn-primary w-100 mt-2" type="submit">Create account</button>
+    </form>
+    <p class="text-center text-secondary mt-4 mb-0">Already registered? <a href="{% url 'accounts:login' %}">Log in</a></p>
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{% if is_create %}Add parking reference{% else %}Edit parking reference{% endif %}{% endblock %}
+{% block content %}
+<div class="form-shell mx-auto"><p class="eyebrow mb-2">PARKING REFERENCE</p><h1 class="h2 fw-bold">{% if is_create %}Add a reference{% else %}Edit reference{% endif %}</h1><p class="text-secondary mb-4">{{ parking_session.location.facility.name }} · Stall {{ parking_session.location.stall_number }}</p>
+    <div class="alert alert-info">Add a photo, a note, or both. Images must be JPG, PNG, or WebP and no larger than 5 MB.</div>
+    <form method="post" enctype="multipart/form-data" novalidate>{% csrf_token %}{% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+        {% for field in form %}<div class="mb-3"><label class="form-label fw-semibold" for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}{% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}</div>{% endfor %}
+        {% if reference.photo %}<p class="small text-secondary">A current photo is saved. Select another image to replace it, or use the checkbox to remove it.</p>{% endif %}
+        <div class="d-flex gap-2 mt-4"><button class="btn btn-primary" type="submit">Save reference</button><a class="btn btn-outline-secondary" href="{% url 'parking:session_detail' parking_session.pk %}">Cancel</a></div>
+    </form>
+</div>
+{% endblock %}

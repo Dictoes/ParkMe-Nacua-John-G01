@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{{ vehicle.plate_number }}{% endblock %}
+{% block content %}
+<section class="page-heading">
+    <div><p class="eyebrow mb-2">YOUR GARAGE</p><h1 class="h2 fw-bold mb-1">{{ vehicle.plate_number }}</h1><p class="text-secondary mb-0">{{ vehicle.brand_model|default:"Vehicle" }}{% if vehicle.color %} · {{ vehicle.color }}{% endif %}</p></div>
+    <div class="d-flex gap-2"><a class="btn btn-outline-secondary" href="{% url 'parking:vehicle_update' vehicle.pk %}">Edit</a><a class="btn btn-primary" href="{% url 'parking:session_create' %}">Park this vehicle</a></div>
+</section>
+<section class="surface-card p-3 p-md-4">
+    <div class="d-flex justify-content-between align-items-center mb-3"><h2 class="h5 mb-0">Parking history</h2><span class="badge text-bg-light">{{ page_obj.paginator.count }} sessions</span></div>
+    {% if page_obj.object_list %}
+    <div class="table-responsive"><table class="table align-middle"><thead><tr><th>Facility and spot</th><th>Parked at</th><th>Status</th></tr></thead><tbody>
+        {% for session in page_obj %}<tr><td><a href="{% url 'parking:session_detail' session.pk %}">{{ session.location.facility.name }}</a><div class="small text-secondary">{{ session.location.floor_level }} · {{ session.location.zone }} · Stall {{ session.location.stall_number }}</div></td><td>{{ session.parked_at|date:"M j, Y · g:i A" }}</td><td><span class="status-badge status-{{ session.status|lower }}">{{ session.get_status_display }}</span></td></tr>{% endfor %}
+    </tbody></table></div>
+    {% else %}<div class="empty-state compact"><i class="bi bi-clock-history" aria-hidden="true"></i><p>No parking sessions for this vehicle yet.</p></div>{% endif %}
+</section>
+{% include "parking/_pagination.html" %}
+{% endblock %}

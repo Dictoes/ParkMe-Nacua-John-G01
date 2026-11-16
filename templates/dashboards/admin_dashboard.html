@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Administrator dashboard{% endblock %}
+{% block content %}
+<div class="content-shell">
+    <p class="eyebrow mb-2">PARKME ADMINISTRATION</p>
+    <h1 class="h2 fw-bold">Administrator dashboard</h1>
+    <p class="text-secondary mb-4">Manage the shared parking directory and ParkMe accounts.</p>
+    <div class="row g-3">
+        <div class="col-sm-6 col-lg-3"><a class="dashboard-stat-link" href="{% url 'admin:accounts_user_changelist' %}"><article class="stat-card p-4 rounded-4 h-100"><p class="small text-secondary mb-2">Registered drivers</p><p class="display-6 fw-bold mb-0">{{ driver_count }}</p></article></a></div>
+        <div class="col-sm-6 col-lg-3"><a class="dashboard-stat-link" href="{% url 'parking:facility_list' %}"><article class="stat-card p-4 rounded-4 h-100"><p class="small text-secondary mb-2">Facilities</p><p class="display-6 fw-bold mb-0">{{ facility_count }}</p></article></a></div>
+        <div class="col-sm-6 col-lg-3"><a class="dashboard-stat-link" href="{% url 'parking:location_list' %}"><article class="stat-card p-4 rounded-4 h-100"><p class="small text-secondary mb-2">Parking locations</p><p class="display-6 fw-bold mb-0">{{ location_count }}</p></article></a></div>
+        <div class="col-sm-6 col-lg-3"><a class="dashboard-stat-link" href="{% url 'admin:index' %}"><article class="stat-card p-4 rounded-4 h-100"><p class="small text-secondary mb-2">Administration</p><p class="h5 fw-bold mb-0">Open admin tools <i class="bi bi-arrow-up-right"></i></p></article></a></div>
+    </div>
+    <section class="surface-card p-4 mt-4"><h2 class="h5">Directory management</h2><p class="text-secondary">Keep the shared list of parking facilities and their floor, zone, and stall locations current. Drivers can browse this directory when recording a parking session.</p><div class="d-flex flex-wrap gap-2"><a class="btn btn-primary" href="{% url 'parking:facility_create' %}">Add a facility</a><a class="btn btn-outline-primary" href="{% url 'parking:location_create' %}">Add a parking location</a><a class="btn btn-outline-secondary" href="{% url 'admin:accounts_user_changelist' %}">Manage accounts</a></div></section>
+</div>
+{% endblock %}

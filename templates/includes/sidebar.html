@@ -1,0 +1,60 @@
+<div class="app-sidebar" id="appSidebar">
+    <div class="sidebar-identity">
+        <span class="sidebar-avatar"><i class="bi bi-person-fill" aria-hidden="true"></i></span>
+        <span class="sidebar-user-copy">
+            <strong>{{ user.get_full_name|default:user.username }}</strong>
+            <small>{{ user.get_role_display }}</small>
+        </span>
+    </div>
+
+    <p class="sidebar-label">WORKSPACE</p>
+    <nav class="sidebar-nav" aria-label="Main navigation">
+        {% if user.role == "ADMINISTRATOR" %}
+            <a class="sidebar-link{% if request.resolver_match.url_name == 'admin_dashboard' %} active{% endif %}" href="{% url 'accounts:admin_dashboard' %}"{% if request.resolver_match.url_name == 'admin_dashboard' %} aria-current="page"{% endif %}>
+                <i class="bi bi-grid-1x2" aria-hidden="true"></i><span>Overview</span>
+            </a>
+            <a class="sidebar-link{% if request.resolver_match.url_name == 'facility_list' or request.resolver_match.url_name == 'facility_detail' or request.resolver_match.url_name == 'facility_create' or request.resolver_match.url_name == 'facility_update' or request.resolver_match.url_name == 'facility_delete' %} active{% endif %}" href="{% url 'parking:facility_list' %}"{% if request.resolver_match.url_name == 'facility_list' or request.resolver_match.url_name == 'facility_detail' or request.resolver_match.url_name == 'facility_create' or request.resolver_match.url_name == 'facility_update' or request.resolver_match.url_name == 'facility_delete' %} aria-current="page"{% endif %}>
+                <i class="bi bi-buildings" aria-hidden="true"></i><span>Facilities</span>
+            </a>
+            <a class="sidebar-link{% if request.resolver_match.url_name == 'location_list' or request.resolver_match.url_name == 'location_detail' or request.resolver_match.url_name == 'location_create' or request.resolver_match.url_name == 'location_update' or request.resolver_match.url_name == 'location_delete' %} active{% endif %}" href="{% url 'parking:location_list' %}"{% if request.resolver_match.url_name == 'location_list' or request.resolver_match.url_name == 'location_detail' or request.resolver_match.url_name == 'location_create' or request.resolver_match.url_name == 'location_update' or request.resolver_match.url_name == 'location_delete' %} aria-current="page"{% endif %}>
+                <i class="bi bi-geo-alt" aria-hidden="true"></i><span>Parking locations</span>
+            </a>
+            {% if user.is_staff %}
+                <a class="sidebar-link" href="{% url 'admin:accounts_user_changelist' %}"><i class="bi bi-people" aria-hidden="true"></i><span>Manage accounts</span></a>
+            {% endif %}
+        {% else %}
+            <a class="sidebar-link{% if request.resolver_match.url_name == 'driver_dashboard' %} active{% endif %}" href="{% url 'accounts:driver_dashboard' %}"{% if request.resolver_match.url_name == 'driver_dashboard' %} aria-current="page"{% endif %}>
+                <i class="bi bi-grid-1x2" aria-hidden="true"></i><span>Overview</span>
+            </a>
+            <a class="sidebar-link{% if request.resolver_match.url_name == 'vehicle_list' or request.resolver_match.url_name == 'vehicle_create' or request.resolver_match.url_name == 'vehicle_detail' or request.resolver_match.url_name == 'vehicle_update' or request.resolver_match.url_name == 'vehicle_delete' %} active{% endif %}" href="{% url 'parking:vehicle_list' %}"{% if request.resolver_match.url_name == 'vehicle_list' or request.resolver_match.url_name == 'vehicle_create' or request.resolver_match.url_name == 'vehicle_detail' or request.resolver_match.url_name == 'vehicle_update' or request.resolver_match.url_name == 'vehicle_delete' %} aria-current="page"{% endif %}>
+                <i class="bi bi-car-front" aria-hidden="true"></i><span>My vehicles</span>
+            </a>
+            <a class="sidebar-link{% if request.resolver_match.url_name == 'session_list' or request.resolver_match.url_name == 'session_create' or request.resolver_match.url_name == 'session_detail' or request.resolver_match.url_name == 'session_update' or request.resolver_match.url_name == 'session_delete' or request.resolver_match.url_name == 'session_complete' or request.resolver_match.url_name == 'reference_create' or request.resolver_match.url_name == 'reference_update' or request.resolver_match.url_name == 'reference_delete' or request.resolver_match.url_name == 'reference_photo' or request.resolver_match.url_name == 'timer_update' or request.resolver_match.url_name == 'timer_delete' %} active{% endif %}" href="{% url 'parking:session_list' %}"{% if request.resolver_match.url_name == 'session_list' or request.resolver_match.url_name == 'session_create' or request.resolver_match.url_name == 'session_detail' or request.resolver_match.url_name == 'session_update' or request.resolver_match.url_name == 'session_delete' or request.resolver_match.url_name == 'session_complete' or request.resolver_match.url_name == 'reference_create' or request.resolver_match.url_name == 'reference_update' or request.resolver_match.url_name == 'reference_delete' or request.resolver_match.url_name == 'reference_photo' or request.resolver_match.url_name == 'timer_update' or request.resolver_match.url_name == 'timer_delete' %} aria-current="page"{% endif %}>
+                <i class="bi bi-p-square" aria-hidden="true"></i><span>Parking history</span>
+            </a>
+            <a class="sidebar-link{% if request.resolver_match.url_name == 'facility_list' or request.resolver_match.url_name == 'facility_detail' %} active{% endif %}" href="{% url 'parking:facility_list' %}"{% if request.resolver_match.url_name == 'facility_list' or request.resolver_match.url_name == 'facility_detail' %} aria-current="page"{% endif %}>
+                <i class="bi bi-buildings" aria-hidden="true"></i><span>Facilities</span>
+            </a>
+            <a class="sidebar-link{% if request.resolver_match.url_name == 'location_list' or request.resolver_match.url_name == 'location_detail' %} active{% endif %}" href="{% url 'parking:location_list' %}"{% if request.resolver_match.url_name == 'location_list' or request.resolver_match.url_name == 'location_detail' %} aria-current="page"{% endif %}>
+                <i class="bi bi-geo-alt" aria-hidden="true"></i><span>Parking locations</span>
+            </a>
+            <a class="sidebar-link{% if request.resolver_match.url_name == 'reports' or request.resolver_match.url_name == 'report_csv' %} active{% endif %}" href="{% url 'parking:reports' %}"{% if request.resolver_match.url_name == 'reports' or request.resolver_match.url_name == 'report_csv' %} aria-current="page"{% endif %}>
+                <i class="bi bi-bar-chart" aria-hidden="true"></i><span>Reports</span>
+            </a>
+        {% endif %}
+    </nav>
+
+    <p class="sidebar-label sidebar-label-account">ACCOUNT</p>
+    <nav class="sidebar-nav" aria-label="Account navigation">
+        <a class="sidebar-link{% if request.resolver_match.url_name == 'profile' or request.resolver_match.url_name == 'edit_profile' %} active{% endif %}" href="{% url 'accounts:profile' %}"{% if request.resolver_match.url_name == 'profile' or request.resolver_match.url_name == 'edit_profile' %} aria-current="page"{% endif %}>
+            <i class="bi bi-person" aria-hidden="true"></i><span>My profile</span>
+        </a>
+    </nav>
+
+    {% if user.role == "DRIVER" %}
+        <div class="sidebar-tip">
+            <i class="bi bi-lightbulb" aria-hidden="true"></i>
+            <p class="mb-0">Snap a photo of a nearby sign to make your parking spot easier to find.</p>
+        </div>
+    {% endif %}
+</div>
