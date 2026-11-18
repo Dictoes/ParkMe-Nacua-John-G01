@@ -1,36 +1,17 @@
 {% extends "base.html" %}
-{% block title %}Find your way back to your car{% endblock %}
+{% block title %}ParkMe accounts{% endblock %}
 {% block content %}
 <section class="hero-panel p-4 p-md-5 rounded-4">
-    <div class="row align-items-center g-4">
-        <div class="col-lg-7">
-            <p class="eyebrow mb-2">PARK. SNAP. RETURN.</p>
-            <h1 class="display-5 fw-bold mb-3">A little reminder for the way back.</h1>
-            <p class="lead text-secondary mb-4">Save the facility, floor, zone, stall, and a quick photo of the spot. When it’s time to go, the details are right where you left them.</p>
-            {% if user.is_authenticated %}
-                <a class="btn btn-primary btn-lg" href="{% url 'accounts:dashboard' %}">Go to your dashboard</a>
-            {% else %}
-                <a class="btn btn-primary btn-lg me-2 mb-2" href="{% url 'accounts:register' %}">Create a driver account</a>
-                <a class="btn btn-outline-secondary btn-lg mb-2" href="{% url 'accounts:login' %}">Log in</a>
-            {% endif %}
-        </div>
-        <div class="col-lg-5">
-            <div class="parking-preview p-4 rounded-4">
-                <div class="d-flex justify-content-between align-items-start"><span class="parking-preview-label"><i class="bi bi-geo-alt-fill me-1"></i>YOUR PARKING SPOT</span><span class="status-badge status-active">Active</span></div>
-                <div class="parking-preview-illustration my-4" aria-hidden="true"><div class="parking-level">LEVEL <strong>03</strong></div><div class="parking-stall"><span>P</span><b>A-18</b></div></div>
-                <h2 class="h4 fw-bold mb-1">North Parking Garage</h2>
-                <p class="text-secondary mb-3">Level 3 · Blue zone · Stall A-18</p>
-                <div class="parking-preview-footer"><i class="bi bi-car-front-fill me-2"></i>Keep the little details close.</div>
-            </div>
-        </div>
-    </div>
-</section>
-<section class="py-5">
-    <div class="text-center mb-4"><p class="eyebrow mb-2">PARKING, LESS FORGETTABLE</p><h2 class="h3 fw-bold">Everything you need to remember your spot</h2></div>
-    <div class="row g-3">
-        <div class="col-md-4"><article class="feature-card p-4 h-100 rounded-4"><div class="feature-icon mb-3"><i class="bi bi-pin-map" aria-hidden="true"></i></div><h3 class="h5 fw-bold">Save the details</h3><p class="text-secondary mb-0">Keep the facility, floor, zone, and stall linked to the vehicle you parked.</p></article></div>
-        <div class="col-md-4"><article class="feature-card p-4 h-100 rounded-4"><div class="feature-icon mb-3"><i class="bi bi-camera" aria-hidden="true"></i></div><h3 class="h5 fw-bold">Snap a reminder</h3><p class="text-secondary mb-0">Add a car photo, a landmark photo, or a note about the nearby signs.</p></article></div>
-        <div class="col-md-4"><article class="feature-card p-4 h-100 rounded-4"><div class="feature-icon mb-3"><i class="bi bi-clock-history" aria-hidden="true"></i></div><h3 class="h5 fw-bold">Find it later</h3><p class="text-secondary mb-0">Search your parking history and review simple reports.</p></article></div>
+    <div class="mx-auto text-center" style="max-width: 46rem">
+        <p class="eyebrow mb-2">PARKME ACCOUNTS</p>
+        <h1 class="display-5 fw-bold mb-3">Your account, all in one place.</h1>
+        <p class="lead text-secondary mb-4">Create and manage your ParkMe profile with secure sign-in and role-based account access.</p>
+        {% if user.is_authenticated %}
+            <a class="btn btn-primary btn-lg" href="{% url 'accounts:dashboard' %}">Go to your dashboard</a>
+        {% else %}
+            <a class="btn btn-primary btn-lg me-2 mb-2" href="{% url 'accounts:register' %}">Create an account</a>
+            <a class="btn btn-outline-secondary btn-lg mb-2" href="{% url 'accounts:login' %}">Log in</a>
+        {% endif %}
     </div>
 </section>
 {% endblock %}

@@ -1,24 +1,15 @@
-# ParkMe: Park, Snap and Return
+# ParkMe Account Management
 
-ParkMe is a Django full-stack web application for helping drivers remember where they parked. It implements account registration and authentication, a shared facility and spot directory, personal vehicle and parking-session management, photo/note references, search, filters, and parking-history reports.
+ParkMe currently provides the required account feature: registration, login and logout, role-based dashboards, and private profile viewing and editing.
 
 ## Roles
 
 - **Driver** is the default role assigned through public registration.
-- **Administrator** is assigned to superusers created with Django's `createsuperuser` command. Administrators maintain the shared parking facility/spot directory and manage accounts.
+- **Administrator** is assigned to superusers created with Django's `createsuperuser` command.
 
-The approved SDD identifies Drivers as the primary user. The Administrator role provides protected directory and account administration. Driver parking data remains private to its owner, including when another user is an administrator.
+Each role has its own protected dashboard. Users can only view and edit their own profile. Django's built-in authentication handles password hashing and session management.
 
-## Features from the approved SDD
-
-- **Accounts:** driver registration and login, administrator account management, role-based dashboards, and private profile editing.
-- **Vehicles:** add, view, update, and delete personally owned vehicles; plate numbers are unique per driver.
-- **Facilities and locations:** maintain the shared facility directory and facility types; record a unique floor, zone, and stall for each facility.
-- **Parking sessions:** record a vehicle, location, parked time, and Active/Completed status; complete, edit, search, filter, and delete a driver's own sessions.
-- **Parking references:** upload a car/landmark photo, add notes, or both. Images are size/type validated and served only to the session owner.
-- **History and reports:** filter by vehicle, facility, date, floor, zone, and status; view session totals by vehicle/facility/month and export the driver's own sessions to CSV.
-
-Excluded SDD features such as GPS navigation, automatic vehicle detection, payments, and parking reservations are not implemented.
+Parking management features have been removed from the application. Existing parking tables and data in Supabase are left untouched; they are no longer used by this account-only version.
 
 ## Requirements
 
@@ -48,7 +39,7 @@ Excluded SDD features such as GPS navigation, automatic vehicle detection, payme
    python manage.py migrate
    ```
 
-   Migrations create the Django account and ParkMe tables and enable PostgreSQL row-level security on application and Django framework tables, including `django_session`. No Supabase API-role policies grant access to these tables. Django continues to access them through its trusted server-side database connection.
+   Migrations create the account and Django framework tables. Django connects using its trusted server-side database connection; Supabase browser/client API keys are not used.
 
 5. Create the first Administrator account in Supabase:
 
@@ -74,7 +65,7 @@ Run the full test suite against the PostgreSQL database configured in `.env`:
 python manage.py test
 ```
 
-The tests cover registration and password hashing, authentication and role access, profile ownership, vehicle/facility/location validation, full parking workflows, session ownership, reference validation, filtering, CSV reporting, and deletion constraints.
+The tests cover required registration fields, email and username uniqueness, password confirmation and hashing, login/logout, role-based dashboard access, and private profile viewing and editing.
 
 ## GitHub preparation
 

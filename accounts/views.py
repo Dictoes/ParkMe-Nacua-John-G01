@@ -5,7 +5,6 @@ from django.http import HttpResponseNotAllowed
 from django.shortcuts import redirect, render
 from django.views.decorators.cache import never_cache
 
-from parking.models import ParkingFacility, ParkingLocation, ParkingSession, ParkingStatus, Vehicle
 from .decorators import dashboard_for_user, role_required
 from .forms import LoginForm, ProfileForm, RegistrationForm
 from .models import Role, User
@@ -56,37 +55,21 @@ def admin_dashboard(request):
         "dashboards/admin_dashboard.html",
         {
             "driver_count": User.objects.filter(role=Role.DRIVER).count(),
-            "facility_count": ParkingFacility.objects.count(),
-            "location_count": ParkingLocation.objects.count(),
         },
     )
 
 
 @role_required(Role.DRIVER)
 def driver_dashboard(request):
-    vehicles = Vehicle.objects.filter(owner=request.user)
-    active_sessions = (
-        ParkingSession.objects.filter(
-            vehicle__owner=request.user,
-            status=ParkingStatus.ACTIVE,
-        )
-        .select_related("vehicle", "location__facility")
-        .order_by("-parked_at")
-    )
-    recent_sessions = (
-        ParkingSession.objects.filter(vehicle__owner=request.user)
-        .select_related("vehicle", "location__facility")
-        .order_by("-parked_at")[:5]
-    )
     return render(
         request,
         "dashboards/driver_dashboard.html",
         {
-            "vehicle_count": vehicles.count(),
-            "active_count": active_sessions.count(),
-            "facility_count": ParkingFacility.objects.count(),
-            "active_sessions": active_sessions[:3],
-            "recent_sessions": recent_sessions,
+            "profile_complete": bool(
+                request.user.first_name
+                and request.user.last_name
+                and request.user.email
+            ),
         },
     )
 

@@ -210,76 +210,6 @@ a {
     line-height: 1.7;
 }
 
-.parking-preview {
-    border: 1px solid rgb(16 42 67 / 9%);
-    background: rgb(255 255 255 / 85%);
-    box-shadow: 0 1.5rem 3.5rem rgb(16 42 67 / 11%);
-}
-
-.parking-preview-label {
-    color: var(--parkme-blue);
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.09em;
-}
-
-.parking-preview-illustration {
-    position: relative;
-    display: flex;
-    min-height: 11rem;
-    align-items: flex-end;
-    justify-content: space-between;
-    overflow: hidden;
-    padding: 1rem;
-    border-radius: 0.8rem;
-    background:
-        linear-gradient(90deg, transparent 49.5%, rgb(255 255 255 / 66%) 50%, transparent 50.5%),
-        repeating-linear-gradient(90deg, #dce8e7 0 1.1rem, #eaf1f0 1.1rem 2.2rem);
-}
-
-.parking-level {
-    align-self: flex-start;
-    color: #536d79;
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.12em;
-}
-
-.parking-level strong {
-    display: block;
-    color: var(--parkme-ink);
-    font-size: 2rem;
-    letter-spacing: -0.06em;
-}
-
-.parking-stall {
-    display: grid;
-    width: 5.2rem;
-    height: 7rem;
-    place-content: center;
-    justify-items: center;
-    border: 2px dashed rgb(18 103 130 / 55%);
-    border-radius: 0.5rem;
-    color: var(--parkme-blue);
-    background: rgb(255 255 255 / 62%);
-}
-
-.parking-stall span {
-    font-size: 2.3rem;
-    line-height: 1;
-}
-
-.parking-stall b {
-    margin-top: 0.4rem;
-}
-
-.parking-preview-footer {
-    padding-top: 0.85rem;
-    border-top: 1px solid var(--parkme-line);
-    color: var(--parkme-muted);
-    font-size: 0.87rem;
-}
-
 .eyebrow {
     color: #11718b;
     font-size: 0.76rem;
@@ -309,17 +239,6 @@ a {
     height: 100%;
     color: inherit;
     text-decoration: none;
-}
-
-.active-parking-card {
-    border: 1px solid var(--parkme-line);
-    background: #fbfdfd;
-    transition: border-color 160ms ease, background 160ms ease;
-}
-
-.active-parking-card:hover {
-    border-color: #8fc2ce;
-    background: #f2f9fa;
 }
 
 .feature-icon {

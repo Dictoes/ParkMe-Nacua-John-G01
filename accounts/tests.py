@@ -149,31 +149,29 @@ class AuthenticationAndRoleTests(TestCase):
         self.client.force_login(self.admin)
         admin_response = self.client.get(reverse("accounts:admin_dashboard"))
 
-        self.assertContains(driver_response, "Your parking details")
+        self.assertContains(driver_response, "Manage your ParkMe account")
         self.assertContains(admin_response, "Administrator dashboard")
         self.assertEqual(admin_response.context["driver_count"], 1)
 
-    def test_sidebar_shows_driver_links_and_marks_current_page(self):
+    def test_driver_dashboard_shows_account_navigation(self):
         self.client.force_login(self.driver)
 
-        response = self.client.get(reverse("parking:session_list"))
+        response = self.client.get(reverse("accounts:driver_dashboard"))
 
         self.assertContains(response, 'id="appSidebar"')
-        self.assertContains(response, "My vehicles")
-        self.assertContains(response, "Parking history")
-        self.assertContains(response, "Reports")
+        self.assertContains(response, "Driver dashboard")
+        self.assertContains(response, "My profile")
         self.assertContains(response, 'aria-current="page"')
         self.assertNotContains(response, "Manage accounts")
 
-    def test_sidebar_shows_administrator_directory_and_account_links(self):
+    def test_administrator_dashboard_shows_account_navigation(self):
         self.client.force_login(self.admin)
 
         response = self.client.get(reverse("accounts:admin_dashboard"))
 
-        self.assertContains(response, "Facilities")
-        self.assertContains(response, "Parking locations")
+        self.assertContains(response, "Administrator dashboard")
         self.assertContains(response, "Manage accounts")
-        self.assertNotContains(response, "My vehicles")
+        self.assertNotContains(response, "Driver dashboard")
 
 
 class ProfileTests(TestCase):
