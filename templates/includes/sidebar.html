@@ -16,9 +16,6 @@
             <a class="sidebar-link{% if request.resolver_match.url_name == 'driver_dashboard' %} active{% endif %}" href="{% url 'accounts:driver_dashboard' %}"{% if request.resolver_match.url_name == 'driver_dashboard' %} aria-current="page"{% endif %}>
                 <i class="bi bi-grid-1x2" aria-hidden="true"></i><span>Driver dashboard</span>
             </a>
-            <a class="sidebar-link{% if request.resolver_match.namespace == 'vehicles' %} active{% endif %}" href="{% url 'vehicles:list' %}"{% if request.resolver_match.namespace == 'vehicles' %} aria-current="page"{% endif %}>
-                <i class="bi bi-car-front" aria-hidden="true"></i><span>My vehicles</span>
-            </a>
         {% endif %}
         <a class="sidebar-link{% if request.resolver_match.url_name == 'profile' or request.resolver_match.url_name == 'edit_profile' %} active{% endif %}" href="{% url 'accounts:profile' %}"{% if request.resolver_match.url_name == 'profile' or request.resolver_match.url_name == 'edit_profile' %} aria-current="page"{% endif %}>
             <i class="bi bi-person" aria-hidden="true"></i><span>My profile</span>
