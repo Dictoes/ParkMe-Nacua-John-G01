@@ -20,7 +20,6 @@ from .forms import (
     LocationForm,
     ParkingReferenceForm,
     ParkingSessionForm,
-    ParkingTimerForm,
     VehicleForm,
 )
 from .models import (
@@ -29,7 +28,6 @@ from .models import (
     ParkingReference,
     ParkingSession,
     ParkingStatus,
-    ParkingTimer,
     Vehicle,
 )
 
@@ -398,11 +396,10 @@ def session_create(request):
 @login_required
 def session_detail(request, pk):
     session = _owner_session(request, pk)
-    timer = getattr(session, "timer", None)
     return render(
         request,
         "parking/session_detail.html",
-        {"parking_session": session, "timer": timer},
+        {"parking_session": session},
     )
 
 
@@ -543,37 +540,6 @@ def reference_photo(request, pk):
     response["X-Content-Type-Options"] = "nosniff"
     response["Cache-Control"] = "private, no-store"
     return response
-
-
-@login_required
-def timer_update(request, session_pk):
-    session = _owner_session(request, session_pk)
-    timer = getattr(session, "timer", None)
-    form = ParkingTimerForm(request.POST or None, instance=timer)
-    if timer is None:
-        form.fields["start_time"].initial = session.parked_at
-    if request.method == "POST" and form.is_valid():
-        saved_timer = form.save(commit=False)
-        saved_timer.session = session
-        saved_timer.save()
-        messages.success(request, "Parking timer saved.")
-        return redirect("parking:session_detail", pk=session.pk)
-    return render(
-        request,
-        "parking/timer_form.html",
-        {"form": form, "parking_session": session, "timer": timer},
-    )
-
-
-@login_required
-@require_POST
-def timer_delete(request, session_pk):
-    session = _owner_session(request, session_pk)
-    timer = getattr(session, "timer", None)
-    if timer:
-        timer.delete()
-        messages.success(request, "Parking timer removed.")
-    return redirect("parking:session_detail", pk=session.pk)
 
 
 @login_required

@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load static %}
 {% block title %}Parking spot · {{ parking_session.vehicle.plate_number }}{% endblock %}
 {% block content %}
 <section class="page-heading"><div><p class="eyebrow mb-2">YOUR PARKING REFERENCE</p><h1 class="h2 fw-bold mb-1">{{ parking_session.location.facility.name }}</h1><p class="text-secondary mb-0">{{ parking_session.vehicle.plate_number }} · {{ parking_session.location.floor_level }} · {{ parking_session.location.zone }} · Stall {{ parking_session.location.stall_number }}</p></div><div class="d-flex flex-wrap gap-2"><a class="btn btn-outline-secondary" href="{% url 'parking:session_update' parking_session.pk %}">Edit</a><a class="btn btn-outline-danger" href="{% url 'parking:session_delete' parking_session.pk %}">Delete</a>{% if parking_session.status == "ACTIVE" %}<form method="post" action="{% url 'parking:session_complete' parking_session.pk %}">{% csrf_token %}<button class="btn btn-primary" type="submit">Finish parking</button></form>{% endif %}</div></section>
@@ -23,15 +22,5 @@
             {% else %}<div class="empty-state compact"><i class="bi bi-camera" aria-hidden="true"></i><p>No references yet. Add a photo or note about nearby signs and landmarks.</p></div>{% endif %}
         </section>
     </div>
-    <div class="col-lg-5">
-        <section class="surface-card p-4 timer-card">
-            <div class="d-flex justify-content-between align-items-start gap-3"><div><p class="eyebrow mb-2">PARKING TIMER</p><h2 class="h5 mb-1">Time remaining</h2></div><a class="btn btn-sm btn-outline-secondary" href="{% url 'parking:timer_update' parking_session.pk %}">{% if timer %}Edit timer{% else %}Set timer{% endif %}</a></div>
-            {% if timer %}
-                <p class="timer-countdown display-6 fw-bold my-3" data-expiration="{{ timer.expiration_time|date:'c' }}" aria-live="polite">--:--:--</p><p class="small text-secondary mb-0">Expected by {{ timer.expiration_time|date:"M j · g:i A" }}</p>
-                <form method="post" action="{% url 'parking:timer_delete' parking_session.pk %}" class="mt-3">{% csrf_token %}<button class="btn btn-sm btn-outline-danger" type="submit">Remove timer</button></form>
-            {% else %}<p class="text-secondary mt-3 mb-0">Set an expected expiration time to see the countdown while this page is open.</p>{% endif %}
-        </section>
-    </div>
 </div>
-<script src="{% static 'js/timer.js' %}" defer></script>
 {% endblock %}

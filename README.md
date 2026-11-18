@@ -1,6 +1,6 @@
 # ParkMe: Park, Snap and Return
 
-ParkMe is a Django full-stack web application for helping drivers remember where they parked. It implements account registration and authentication, a shared facility and spot directory, personal vehicle and parking-session management, photo/note references, parking timers, search, filters, and parking-history reports.
+ParkMe is a Django full-stack web application for helping drivers remember where they parked. It implements account registration and authentication, a shared facility and spot directory, personal vehicle and parking-session management, photo/note references, search, filters, and parking-history reports.
 
 ## Roles
 
@@ -16,7 +16,6 @@ The approved SDD identifies Drivers as the primary user. The Administrator role 
 - **Facilities and locations:** maintain the shared facility directory and facility types; record a unique floor, zone, and stall for each facility.
 - **Parking sessions:** record a vehicle, location, parked time, and Active/Completed status; complete, edit, search, filter, and delete a driver's own sessions.
 - **Parking references:** upload a car/landmark photo, add notes, or both. Images are size/type validated and served only to the session owner.
-- **Parking timers:** store a start and expected expiration time and display the remaining time while the session page is open.
 - **History and reports:** filter by vehicle, facility, date, floor, zone, and status; view session totals by vehicle/facility/month and export the driver's own sessions to CSV.
 
 Excluded SDD features such as GPS navigation, automatic vehicle detection, payments, and parking reservations are not implemented.
@@ -75,7 +74,7 @@ Run the full test suite against the PostgreSQL database configured in `.env`:
 python manage.py test
 ```
 
-The tests cover registration and password hashing, authentication and role access, profile ownership, vehicle/facility/location validation, full parking workflows, session ownership, reference/timer business rules, filtering, CSV reporting, and deletion constraints.
+The tests cover registration and password hashing, authentication and role access, profile ownership, vehicle/facility/location validation, full parking workflows, session ownership, reference validation, filtering, CSV reporting, and deletion constraints.
 
 ## GitHub preparation
 

@@ -2,7 +2,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 from django.db import models
-from django.db.models import F, Q
+from django.db.models import Q
 from django.db.models.functions import Lower
 from django.utils import timezone
 
@@ -195,37 +195,3 @@ class ParkingReference(models.Model):
 
     def __str__(self):
         return f"Reference for session {self.session_id}"
-
-
-class ParkingTimer(models.Model):
-    session = models.OneToOneField(
-        ParkingSession,
-        on_delete=models.CASCADE,
-        related_name="timer",
-    )
-    start_time = models.DateTimeField()
-    expiration_time = models.DateTimeField()
-
-    class Meta:
-        ordering = ["expiration_time"]
-        constraints = [
-            models.CheckConstraint(
-                check=Q(expiration_time__gt=F("start_time")),
-                name="parking_timer_expires_after_start",
-            ),
-        ]
-
-    def clean(self):
-        super().clean()
-        if self.start_time and self.expiration_time:
-            if self.expiration_time <= self.start_time:
-                raise ValidationError(
-                    {"expiration_time": "Expiration must be later than the start time."}
-                )
-
-    @property
-    def remaining_seconds(self):
-        return max(0, int((self.expiration_time - timezone.now()).total_seconds()))
-
-    def __str__(self):
-        return f"Timer for session {self.session_id}"

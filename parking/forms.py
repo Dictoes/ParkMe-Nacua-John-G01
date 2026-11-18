@@ -6,7 +6,6 @@ from .models import (
     ParkingLocation,
     ParkingReference,
     ParkingSession,
-    ParkingTimer,
     Vehicle,
 )
 
@@ -151,34 +150,4 @@ class ParkingReferenceForm(BootstrapFormMixin, forms.ModelForm):
             raise ValidationError("Add a photo, a note, or both for this reference.")
         if photo and photo.size > 5 * 1024 * 1024:
             self.add_error("photo", "Image files must be 5 MB or smaller.")
-        return cleaned_data
-
-
-class ParkingTimerForm(BootstrapFormMixin, forms.ModelForm):
-    class Meta:
-        model = ParkingTimer
-        fields = ("start_time", "expiration_time")
-        widgets = {
-            "start_time": forms.DateTimeInput(
-                format="%Y-%m-%dT%H:%M",
-                attrs={"type": "datetime-local"},
-            ),
-            "expiration_time": forms.DateTimeInput(
-                format="%Y-%m-%dT%H:%M",
-                attrs={"type": "datetime-local"},
-            ),
-        }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field in self.fields.values():
-            field.widget.attrs["class"] = "form-control"
-            field.input_formats = ["%Y-%m-%dT%H:%M", "%Y-%m-%d %H:%M:%S%z"]
-
-    def clean(self):
-        cleaned_data = super().clean()
-        start = cleaned_data.get("start_time")
-        expiration = cleaned_data.get("expiration_time")
-        if start and expiration and expiration <= start:
-            self.add_error("expiration_time", "Expiration must be later than the start time.")
         return cleaned_data

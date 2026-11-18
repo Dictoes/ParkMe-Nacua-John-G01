@@ -14,7 +14,6 @@ from .forms import (
     LocationForm,
     ParkingReferenceForm,
     ParkingSessionForm,
-    ParkingTimerForm,
     VehicleForm,
 )
 from .models import (
@@ -24,7 +23,6 @@ from .models import (
     ParkingReference,
     ParkingSession,
     ParkingStatus,
-    ParkingTimer,
     Vehicle,
 )
 
@@ -362,7 +360,7 @@ class ParkingSessionTests(ParkingTestCase):
         self.assertIn("'=1+2", response.content.decode())
 
 
-class ReferenceAndTimerTests(ParkingTestCase):
+class ReferenceTests(ParkingTestCase):
     def setUp(self):
         super().setUp()
         self.temp_media = tempfile.TemporaryDirectory()
@@ -424,79 +422,6 @@ class ReferenceAndTimerTests(ParkingTestCase):
             reverse("parking:reference_photo", args=[reference.pk])
         )
         self.assertEqual(forbidden.status_code, 404)
-
-    def test_timer_requires_expiration_after_start(self):
-        start = timezone.now()
-        form = ParkingTimerForm(
-            {
-                "start_time": self.local_datetime(start),
-                "expiration_time": self.local_datetime(start - timedelta(minutes=1)),
-            }
-        )
-        self.assertFalse(form.is_valid())
-        self.assertIn("expiration_time", form.errors)
-
-    def test_driver_can_create_update_and_delete_timer(self):
-        self.client.force_login(self.driver)
-        start = timezone.now() + timedelta(minutes=1)
-        expiration = start + timedelta(minutes=30)
-        response = self.client.post(
-            reverse("parking:timer_update", args=[self.session.pk]),
-            {
-                "start_time": self.local_datetime(start),
-                "expiration_time": self.local_datetime(expiration),
-            },
-        )
-        self.assertRedirects(
-            response, reverse("parking:session_detail", args=[self.session.pk])
-        )
-        timer = ParkingTimer.objects.get(session=self.session)
-        detail = self.client.get(
-            reverse("parking:session_detail", args=[self.session.pk])
-        )
-        self.assertContains(detail, "Time remaining")
-        updated_expiration = expiration + timedelta(minutes=15)
-        update = self.client.post(
-            reverse("parking:timer_update", args=[self.session.pk]),
-            {
-                "start_time": self.local_datetime(start),
-                "expiration_time": self.local_datetime(updated_expiration),
-            },
-        )
-        self.assertEqual(update.status_code, 302)
-        timer.refresh_from_db()
-        self.assertAlmostEqual(
-            timer.expiration_time.timestamp(),
-            updated_expiration.timestamp(),
-            delta=60,
-        )
-        deleted = self.client.post(
-            reverse("parking:timer_delete", args=[self.session.pk])
-        )
-        self.assertRedirects(
-            deleted, reverse("parking:session_detail", args=[self.session.pk])
-        )
-        self.assertFalse(ParkingTimer.objects.filter(pk=timer.pk).exists())
-
-    def test_driver_cannot_manage_another_drivers_timer(self):
-        other_vehicle = Vehicle.objects.create(
-            owner=self.other_driver, plate_number="PRIVATE-4"
-        )
-        other_session = ParkingSession.objects.create(
-            vehicle=other_vehicle, location=self.location
-        )
-        self.client.force_login(self.driver)
-        response = self.client.post(
-            reverse("parking:timer_update", args=[other_session.pk]),
-            {
-                "start_time": self.local_datetime(timezone.now()),
-                "expiration_time": self.local_datetime(
-                    timezone.now() + timedelta(hours=1)
-                ),
-            },
-        )
-        self.assertEqual(response.status_code, 404)
-
 
 class ReportTests(ParkingTestCase):
     def test_report_contains_database_driven_summary_and_month_grouping(self):

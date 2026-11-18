@@ -454,16 +454,6 @@ a {
     background: #edf2f5;
 }
 
-.timer-countdown {
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -0.04em;
-    color: var(--parkme-blue);
-}
-
-.timer-countdown.timer-expired {
-    color: #b42332;
-}
-
 .pagination {
     --bs-pagination-color: var(--parkme-blue);
     --bs-pagination-active-bg: var(--parkme-blue);

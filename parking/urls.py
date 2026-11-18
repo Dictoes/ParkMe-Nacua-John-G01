@@ -35,8 +35,6 @@ urlpatterns = [
     path("references/<int:pk>/edit/", views.reference_update, name="reference_update"),
     path("references/<int:pk>/delete/", views.reference_delete, name="reference_delete"),
     path("references/<int:pk>/photo/", views.reference_photo, name="reference_photo"),
-    path("sessions/<int:session_pk>/timer/", views.timer_update, name="timer_update"),
-    path("sessions/<int:session_pk>/timer/delete/", views.timer_delete, name="timer_delete"),
     path("reports/", views.reports, name="reports"),
     path("reports/export.csv", views.report_csv, name="report_csv"),
 ]
