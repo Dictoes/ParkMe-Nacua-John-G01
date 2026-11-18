@@ -68,6 +68,28 @@ class VehicleDataTests(TestCase):
 
         self.assertTrue(form.is_valid(), form.errors)
 
+    def test_editing_vehicle_keeps_its_plate_valid(self):
+        vehicle = Vehicle.objects.create(owner=self.driver, plate_number="ABC-123")
+        form = VehicleForm(
+            {"plate_number": "abc-123", "brand_model": "Updated Model", "color": "Red"},
+            instance=vehicle,
+            owner=self.driver,
+        )
+
+        self.assertTrue(form.is_valid(), form.errors)
+
+    def test_editing_vehicle_rejects_another_vehicle_plate(self):
+        vehicle = Vehicle.objects.create(owner=self.driver, plate_number="ABC-123")
+        Vehicle.objects.create(owner=self.driver, plate_number="XYZ-789")
+        form = VehicleForm(
+            {"plate_number": "xyz-789", "brand_model": "", "color": ""},
+            instance=vehicle,
+            owner=self.driver,
+        )
+
+        self.assertFalse(form.is_valid())
+        self.assertIn("plate_number", form.errors)
+
 
 class VehiclePageTests(TestCase):
     def setUp(self):
@@ -106,6 +128,73 @@ class VehiclePageTests(TestCase):
         self.assertEqual(vehicle.color, "Blue")
         self.assertContains(self.client.get(reverse("vehicles:list")), "ABC-123")
 
+    def test_driver_can_edit_their_own_vehicle(self):
+        vehicle = Vehicle.objects.create(
+            owner=self.driver,
+            plate_number="OLD-123",
+            brand_model="Old Model",
+            color="Blue",
+        )
+        self.client.force_login(self.driver)
+
+        response = self.client.post(
+            reverse("vehicles:edit", args=[vehicle.pk]),
+            {
+                "plate_number": " new-123 ",
+                "brand_model": "New Model",
+                "color": "Red",
+            },
+        )
+
+        self.assertRedirects(response, reverse("vehicles:list"))
+        vehicle.refresh_from_db()
+        self.assertEqual(vehicle.owner, self.driver)
+        self.assertEqual(vehicle.plate_number, "NEW-123")
+        self.assertEqual(vehicle.brand_model, "New Model")
+        self.assertEqual(vehicle.color, "Red")
+
+    def test_driver_cannot_edit_another_drivers_vehicle(self):
+        vehicle = Vehicle.objects.create(
+            owner=self.other_driver,
+            plate_number="OTHER-123",
+        )
+        self.client.force_login(self.driver)
+
+        response = self.client.get(reverse("vehicles:edit", args=[vehicle.pk]))
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_driver_can_view_delete_confirmation_without_deleting_vehicle(self):
+        vehicle = Vehicle.objects.create(owner=self.driver, plate_number="DEL-123")
+        self.client.force_login(self.driver)
+
+        response = self.client.get(reverse("vehicles:delete", args=[vehicle.pk]))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Delete vehicle?")
+        self.assertTrue(Vehicle.objects.filter(pk=vehicle.pk).exists())
+
+    def test_driver_can_delete_their_own_vehicle(self):
+        vehicle = Vehicle.objects.create(owner=self.driver, plate_number="DEL-123")
+        self.client.force_login(self.driver)
+
+        response = self.client.post(reverse("vehicles:delete", args=[vehicle.pk]))
+
+        self.assertRedirects(response, reverse("vehicles:list"))
+        self.assertFalse(Vehicle.objects.filter(pk=vehicle.pk).exists())
+
+    def test_driver_cannot_delete_another_drivers_vehicle(self):
+        vehicle = Vehicle.objects.create(
+            owner=self.other_driver,
+            plate_number="OTHER-123",
+        )
+        self.client.force_login(self.driver)
+
+        response = self.client.post(reverse("vehicles:delete", args=[vehicle.pk]))
+
+        self.assertEqual(response.status_code, 404)
+        self.assertTrue(Vehicle.objects.filter(pk=vehicle.pk).exists())
+
     def test_driver_dashboard_links_to_add_vehicle_and_shows_vehicle_count(self):
         self.client.force_login(self.driver)
 
@@ -126,14 +215,23 @@ class VehiclePageTests(TestCase):
         self.assertNotContains(response, "OTHER-123")
 
     def test_vehicle_pages_require_driver_role(self):
-        for url_name in ("vehicles:list", "vehicles:add"):
+        vehicle = Vehicle.objects.create(owner=self.driver, plate_number="TEST-123")
+        protected_urls = (
+            ("vehicles:list", []),
+            ("vehicles:add", []),
+            ("vehicles:edit", [vehicle.pk]),
+            ("vehicles:delete", [vehicle.pk]),
+        )
+        for url_name, args in protected_urls:
             with self.subTest(url_name=url_name):
-                response = self.client.get(reverse(url_name))
+                response = self.client.get(reverse(url_name, args=args))
                 self.assertRedirects(
                     response,
-                    f"{reverse('accounts:login')}?next={reverse(url_name)}",
+                    f"{reverse('accounts:login')}?next={reverse(url_name, args=args)}",
                 )
 
         self.client.force_login(self.admin)
-        response = self.client.get(reverse("vehicles:list"))
-        self.assertRedirects(response, reverse("accounts:admin_dashboard"))
+        for url_name, args in protected_urls:
+            with self.subTest(url_name=url_name):
+                response = self.client.get(reverse(url_name, args=args))
+                self.assertRedirects(response, reverse("accounts:admin_dashboard"))

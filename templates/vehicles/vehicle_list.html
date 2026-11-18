@@ -14,13 +14,19 @@
         {% if vehicles %}
             <div class="table-responsive">
                 <table class="table align-middle mb-0">
-                    <thead><tr><th>Plate number</th><th>Brand / model</th><th>Color</th></tr></thead>
+                    <thead><tr><th>Plate number</th><th>Brand / model</th><th>Color</th><th>Actions</th></tr></thead>
                     <tbody>
                         {% for vehicle in vehicles %}
                             <tr>
                                 <td class="fw-semibold">{{ vehicle.plate_number }}</td>
                                 <td>{{ vehicle.brand_model|default:"—" }}</td>
                                 <td>{{ vehicle.color|default:"—" }}</td>
+                                <td>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <a class="btn btn-sm btn-outline-primary" href="{% url 'vehicles:edit' vehicle.pk %}">Edit</a>
+                                        <a class="btn btn-sm btn-outline-danger" href="{% url 'vehicles:delete' vehicle.pk %}">Delete</a>
+                                    </div>
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>
