@@ -1,5 +1,6 @@
 from django.contrib import messages
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_http_methods
 
 from accounts.decorators import role_required
 from accounts.models import Role
@@ -24,3 +25,38 @@ def vehicle_create(request):
         messages.success(request, "Vehicle added to your account.")
         return redirect("vehicles:list")
     return render(request, "vehicles/vehicle_form.html", {"form": form})
+
+
+@role_required(Role.DRIVER)
+@require_http_methods(["GET", "POST"])
+def vehicle_edit(request, pk):
+    vehicle = get_object_or_404(Vehicle, pk=pk, owner=request.user)
+    form = VehicleForm(
+        request.POST or None,
+        instance=vehicle,
+        owner=request.user,
+    )
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Vehicle details updated.")
+        return redirect("vehicles:list")
+    return render(
+        request,
+        "vehicles/vehicle_form.html",
+        {"form": form, "vehicle": vehicle},
+    )
+
+
+@role_required(Role.DRIVER)
+@require_http_methods(["GET", "POST"])
+def vehicle_delete(request, pk):
+    vehicle = get_object_or_404(Vehicle, pk=pk, owner=request.user)
+    if request.method == "POST":
+        vehicle.delete()
+        messages.success(request, "Vehicle deleted.")
+        return redirect("vehicles:list")
+    return render(
+        request,
+        "vehicles/vehicle_confirm_delete.html",
+        {"vehicle": vehicle},
+    )

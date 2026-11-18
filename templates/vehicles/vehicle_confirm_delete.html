@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Delete vehicle{% endblock %}
+{% block content %}
+<div class="form-shell mx-auto">
+    <p class="eyebrow mb-2">YOUR VEHICLES</p>
+    <h1 class="h2 fw-bold">Delete vehicle?</h1>
+    <p class="text-secondary mb-4">Are you sure you want to delete <strong>{{ vehicle.plate_number }}</strong>{% if vehicle.brand_model %} ({{ vehicle.brand_model }}){% endif %}? This action cannot be undone.</p>
+    <form method="post">
+        {% csrf_token %}
+        <div class="d-flex flex-wrap gap-2">
+            <button class="btn btn-danger" type="submit">Delete vehicle</button>
+            <a class="btn btn-outline-secondary" href="{% url 'vehicles:list' %}">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
