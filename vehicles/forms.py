@@ -23,10 +23,13 @@ class VehicleForm(forms.ModelForm):
 
     def clean_plate_number(self):
         plate_number = self.cleaned_data["plate_number"].strip().upper()
-        if Vehicle.objects.filter(
+        duplicate_vehicles = Vehicle.objects.filter(
             owner=self.owner,
             plate_number__iexact=plate_number,
-        ).exists():
+        )
+        if self.instance.pk:
+            duplicate_vehicles = duplicate_vehicles.exclude(pk=self.instance.pk)
+        if duplicate_vehicles.exists():
             raise ValidationError(
                 "You have already added a vehicle with this plate number."
             )
