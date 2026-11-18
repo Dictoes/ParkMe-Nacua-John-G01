@@ -5,6 +5,8 @@ from django.http import HttpResponseNotAllowed
 from django.shortcuts import redirect, render
 from django.views.decorators.cache import never_cache
 
+from vehicles.models import Vehicle
+
 from .decorators import dashboard_for_user, role_required
 from .forms import LoginForm, ProfileForm, RegistrationForm
 from .models import Role, User
@@ -70,6 +72,7 @@ def driver_dashboard(request):
                 and request.user.last_name
                 and request.user.email
             ),
+            "vehicle_count": Vehicle.objects.filter(owner=request.user).count(),
         },
     )
 
