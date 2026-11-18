@@ -17,7 +17,7 @@ class Vehicle(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=["owner", "plate_number"],
-                name="vehicles_owner_plate_unique",
+                name="unique_vehicle_plate_per_owner",
             ),
         ]
 
