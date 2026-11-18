@@ -1,15 +1,15 @@
 # ParkMe Account Management
 
-ParkMe currently provides the required account feature: registration, login and logout, role-based dashboards, and private profile viewing and editing.
+ParkMe provides account registration, login and logout, role-based dashboards, private profile management, and the incremental **Add Vehicle** feature.
 
 ## Roles
 
 - **Driver** is the default role assigned through public registration.
 - **Administrator** is assigned to superusers created with Django's `createsuperuser` command.
 
-Each role has its own protected dashboard. Users can only view and edit their own profile. Django's built-in authentication handles password hashing and session management.
+Each role has its own protected dashboard. Users can only view and edit their own profile. Drivers can add vehicles with a required plate number and optional brand/model and color. Plate numbers are normalized and unique per driver; drivers only see vehicles registered to their own account. Vehicle editing and deletion are not part of this increment. Django's built-in authentication handles password hashing and session management.
 
-Parking management features have been removed from the application. Existing parking tables and data in Supabase are left untouched; they are no longer used by this account-only version.
+Other parking management features have been removed from the application. Existing parking tables and data in Supabase are left untouched; they are not used by this increment.
 
 ## Requirements
 
@@ -65,7 +65,7 @@ Run the full test suite against the PostgreSQL database configured in `.env`:
 python manage.py test
 ```
 
-The tests cover required registration fields, email and username uniqueness, password confirmation and hashing, login/logout, role-based dashboard access, and private profile viewing and editing.
+The tests cover required registration fields, email and username uniqueness, password confirmation and hashing, login/logout, role-based dashboard access, private profile viewing and editing, and vehicle registration and ownership.
 
 ## GitHub preparation
 
